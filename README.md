@@ -1,7 +1,9 @@
-# Royal Princess 2026 Travel Website v4
+# Royal Princess 2026 Travel Website v5
 
-更新：
-- 移除首頁「25 歲兒子 × 57 歲媽媽」文字
-- 行李與證件 Checklist 拆成 Yiwen / Jim 兩份
-- 兩人的勾選狀態各自獨立存在 localStorage
-- 保留 v3 的自動天氣、穿搭建議、BR226 回程資訊與郵輪返程區塊
+本版更新：
+- 導覽列「郵輪安全線」與區塊「郵輪返程」統一改為「回郵輪time」
+- 旅遊天氣改成日期選單，一次只顯示一天
+- 天氣仍會開啟頁面時自動更新，保持開啟時每小時更新
+- Checklist 改成 Yiwen / Jim 兩個選單，一次只顯示一人的清單
+- Yiwen / Jim 勾選狀態仍各自獨立保存在 localStorage
+- 保留 BR226 回程資訊與原本每日行程

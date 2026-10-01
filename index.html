@@ -67,6 +67,7 @@ a{color:inherit}
 .day-pill:hover,.day-pill.active{transform:translateY(-2px);border-color:#8fa4b2;background:white;box-shadow:var(--shadow)}
 .day-pill b{display:block;font-size:13px}.day-pill span{font-size:11px;color:var(--muted)}
 .day-panel{display:none}.day-panel.active{display:block}
+.weather-panel,.packing-panel{display:none}.weather-panel.active,.packing-panel.active{display:block}
 .day-head{
   display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
   margin:16px 0 10px
@@ -194,7 +195,7 @@ input,select,button{font:inherit}
   <nav class="nav">
     <a href="#overview">旅遊天氣</a>
     <a href="#itinerary">每日行程</a>
-    <a href="#cruise">郵輪安全線</a>
+    <a href="#cruise">回郵輪time</a>
     <a href="#packing">行李清單</a>
     <a href="#expenses">記帳</a>
   </nav>
@@ -215,9 +216,8 @@ input,select,button{font:inherit}
       <div id="weatherUpdated" class="weather-status">正在取得最新預報…</div>
     </div>
 
-    <div class="cards" id="weatherCards">
-      <div class="card"><div class="subtle">正在載入天氣資料…</div></div>
-    </div>
+    <div class="trip-rail" id="weatherRail"></div>
+    <div id="weatherPanels"></div>
 
     <div class="weather-source">
       天氣資料由 <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> 即時提供。
@@ -232,7 +232,7 @@ input,select,button{font:inherit}
   </section>
 
   <section id="cruise">
-    <h2 class="section-title">郵輪返程</h2>
+    <h2 class="section-title">回郵輪time</h2>
     <div class="cards">
       <div class="card">
         <h3>🇯🇵 清水 · 10/5</h3>
@@ -263,11 +263,16 @@ input,select,button{font:inherit}
 
   <section id="packing">
     <h2 class="section-title">行李與證件 Checklist</h2>
-    <p class="subtle">Yiwen 與 Jim 各自獨立勾選，狀態會存在這台裝置的瀏覽器裡，重新整理不會消失。</p>
+    <p class="subtle">選擇 Yiwen 或 Jim 查看個人清單；兩人的勾選狀態各自獨立儲存在這台裝置的瀏覽器裡。</p>
 
-    <div class="grid2">
+    <div class="trip-rail" id="packingRail">
+      <button class="day-pill active" onclick="showPacking('yiwen')"><b>Yiwen</b><span>行李與證件</span></button>
+      <button class="day-pill" onclick="showPacking('jim')"><b>Jim</b><span>行李與證件</span></button>
+    </div>
 
-      <div class="check-card">
+    <div id="packingPanels">
+      <div class="packing-panel active" data-pack="yiwen">
+        <div class="check-card">
         <h2 style="margin-top:0;">Yiwen</h2>
 
         <div class="check-group">
@@ -308,8 +313,9 @@ input,select,button{font:inherit}
           <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="water">水壺＋濕紙巾</label>
         </div>
       </div>
-
-      <div class="check-card">
+      </div>
+      <div class="packing-panel" data-pack="jim">
+        <div class="check-card">
         <h2 style="margin-top:0;">Jim</h2>
 
         <div class="check-group">
@@ -350,7 +356,7 @@ input,select,button{font:inherit}
           <label class="check-row"><input type="checkbox" data-person="jim" data-check="water">水壺＋濕紙巾</label>
         </div>
       </div>
-
+      </div>
     </div>
   </section>
 
@@ -575,8 +581,8 @@ function renderDays(){
   });
 }
 function showDay(i){
-  document.querySelectorAll(".day-pill").forEach((x,j)=>x.classList.toggle("active",i===j));
-  document.querySelectorAll(".day-panel").forEach((x,j)=>x.classList.toggle("active",i===j));
+  document.querySelectorAll("#dayRail .day-pill").forEach((x,j)=>x.classList.toggle("active",i===j));
+  document.querySelectorAll("#dayPanels .day-panel").forEach((x,j)=>x.classList.toggle("active",i===j));
   document.getElementById(`day-${i}`).scrollIntoView({behavior:"smooth",block:"start"});
 }
 renderDays();
@@ -593,6 +599,45 @@ const weatherStops = [
   {date:"2026-10-13", short:"10/13", place:"順化", lat:16.4637, lon:107.5909},
   {date:"2026-10-16", short:"10/16", place:"新加坡", lat:1.3521, lon:103.8198}
 ];
+
+
+function renderWeatherTabs(){
+  const rail=document.getElementById("weatherRail");
+  const panels=document.getElementById("weatherPanels");
+  if(!rail || !panels) return;
+
+  rail.innerHTML="";
+  panels.innerHTML="";
+
+  weatherStops.forEach((stop,i)=>{
+    const btn=document.createElement("button");
+    btn.className="day-pill"+(i===0?" active":"");
+    btn.innerHTML=`<b>${stop.short}</b><span>${stop.place}</span>`;
+    btn.onclick=()=>showWeather(i);
+    rail.appendChild(btn);
+
+    const panel=document.createElement("div");
+    panel.className="weather-panel"+(i===0?" active":"");
+    panel.id=`weather-${i}`;
+    panel.innerHTML=`<div class="card weather-card"><div class="subtle">正在載入 ${stop.place} ${stop.short} 天氣…</div></div>`;
+    panels.appendChild(panel);
+  });
+
+  const today=new Date();
+  const todayKey=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+  const idx=weatherStops.findIndex(x=>x.date===todayKey);
+  if(idx>=0) showWeather(idx,false);
+}
+
+function showWeather(i,scroll=true){
+  document.querySelectorAll("#weatherRail .day-pill").forEach((x,j)=>x.classList.toggle("active",i===j));
+  document.querySelectorAll("#weatherPanels .weather-panel").forEach((x,j)=>x.classList.toggle("active",i===j));
+  if(scroll){
+    document.getElementById(`weather-${i}`)?.scrollIntoView({behavior:"smooth",block:"nearest"});
+  }
+}
+
+renderWeatherTabs();
 
 function weatherLabel(code){
   if(code===0) return ["☀️","晴朗"];
@@ -646,21 +691,27 @@ async function fetchLocationForecast(stop, cache){
 }
 
 async function loadWeather(){
-  const box=document.getElementById("weatherCards");
   const updated=document.getElementById("weatherUpdated");
-  if(!box) return;
   const cache={};
+
   try{
-    const cards=await Promise.all(weatherStops.map(async stop=>{
+    await Promise.all(weatherStops.map(async (stop,i)=>{
+      const panel=document.getElementById(`weather-${i}`);
+      if(!panel) return;
+
       const data=await fetchLocationForecast(stop,cache);
       const d=data.daily||{};
       const idx=(d.time||[]).indexOf(stop.date);
+
       if(idx<0){
-        return `<div class="card weather-card">
+        panel.innerHTML=`<div class="card weather-card">
           <div class="wx-place">${stop.place} · ${stop.short}</div>
           <div class="wx-error">目前預報範圍尚未涵蓋此日期。</div>
+          <div class="outfit">👕 <b>穿搭：</b>日期進入預報範圍後會自動顯示建議。</div>
         </div>`;
+        return;
       }
+
       const code=d.weather_code[idx];
       const maxT=Math.round(d.temperature_2m_max[idx]);
       const minT=Math.round(d.temperature_2m_min[idx]);
@@ -669,7 +720,8 @@ async function loadWeather(){
       const [icon,label]=weatherLabel(code);
       const dist=targetDistanceDays(stop.date);
       const far=dist>7 ? `<span class="wx-far">長天期預報，之後仍可能調整</span>` : "";
-      return `<div class="card weather-card">
+
+      panel.innerHTML=`<div class="card weather-card">
         <div class="wx-top">
           <div>
             <div class="wx-place">${stop.place}</div>
@@ -684,16 +736,31 @@ async function loadWeather(){
         ${far}
       </div>`;
     }));
-    box.innerHTML=cards.join("");
-    updated.textContent="最新更新："+new Date().toLocaleString("zh-TW",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
+
+    updated.textContent="最新更新："+new Date().toLocaleString("zh-TW",{
+      month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"
+    });
   }catch(err){
-    box.innerHTML=`<div class="card"><div class="wx-error">目前無法取得即時天氣，請稍後重新整理頁面。</div></div>`;
+    document.querySelectorAll("#weatherPanels .weather-panel").forEach((panel,i)=>{
+      panel.innerHTML=`<div class="card"><div class="wx-error">${weatherStops[i]?.place || ""}目前無法取得即時天氣，請稍後重新整理頁面。</div></div>`;
+    });
     updated.textContent="天氣更新失敗";
   }
 }
 loadWeather();
 setInterval(loadWeather,60*60*1000);
 
+
+
+function showPacking(person){
+  document.querySelectorAll("#packingRail .day-pill").forEach(btn=>{
+    const isTarget=btn.textContent.trim().startsWith(person==="yiwen" ? "Yiwen" : "Jim");
+    btn.classList.toggle("active",isTarget);
+  });
+  document.querySelectorAll("#packingPanels .packing-panel").forEach(panel=>{
+    panel.classList.toggle("active",panel.dataset.pack===person);
+  });
+}
 
 // Checklist localStorage：Yiwen / Jim 分開儲存
 document.querySelectorAll("[data-check]").forEach(cb=>{
