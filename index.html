@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#24364b" />
+<title>2026 Royal Princess 日本・亞洲郵輪之旅</title>
+<style>
+:root{
+  --bg:#f4f1ea; --card:#fffdf9; --ink:#24323f; --muted:#6f7b84;
+  --navy:#24364b; --blue:#56758d; --sage:#718775; --sand:#e8dfd1;
+  --accent:#c8755a; --danger:#b4493d; --ok:#52735c; --line:#e5ded3;
+  --shadow:0 10px 30px rgba(35,54,75,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; color:var(--ink); background:var(--bg);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  line-height:1.65;
+}
+a{color:inherit}
+.hero{
+  background:linear-gradient(135deg,#203247 0%,#3e6177 58%,#718775 100%);
+  color:white; padding:48px 20px 38px;
+}
+.hero-inner{max-width:1180px;margin:auto}
+.eyebrow{font-size:13px;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
+.hero h1{font-size:clamp(30px,5vw,54px);line-height:1.08;margin:10px 0 12px;letter-spacing:-.03em}
+.hero p{margin:0;opacity:.86;font-size:15px}
+.hero-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:28px
+}
+.hero-stat{padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.11);backdrop-filter:blur(8px)}
+.hero-stat small{display:block;opacity:.72;font-size:11px;margin-bottom:4px}
+.hero-stat strong{font-size:16px}
+.sticky{
+  position:sticky;top:0;z-index:50;background:rgba(244,241,234,.94);
+  backdrop-filter:blur(10px);border-bottom:1px solid rgba(0,0,0,.06)
+}
+.nav{max-width:1180px;margin:auto;display:flex;gap:8px;padding:9px 14px;overflow:auto}
+.nav a{
+  white-space:nowrap;text-decoration:none;padding:8px 12px;border-radius:999px;
+  font-size:13px;color:#4b5965
+}
+.nav a:hover{background:white;color:var(--navy)}
+.wrap{max-width:1180px;margin:auto;padding:22px}
+.notice{
+  background:#fff3e9;border:1px solid #f0d0bc;border-left:5px solid var(--accent);
+  border-radius:14px;padding:15px 17px;margin-bottom:18px
+}
+.notice strong{color:#8e4936}
+.section-title{font-size:23px;margin:36px 0 14px;letter-spacing:-.02em}
+.subtle{font-size:13px;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card{
+  background:var(--card);border:1px solid rgba(36,54,75,.07);border-radius:18px;
+  box-shadow:var(--shadow);padding:18px
+}
+.card h3{font-size:16px;margin:0 0 8px}
+.kpi{font-size:25px;font-weight:800;color:var(--navy)}
+.trip-rail{display:flex;gap:9px;overflow:auto;padding:4px 0 10px}
+.day-pill{
+  border:1px solid var(--line);background:#fffaf4;border-radius:14px;min-width:104px;
+  padding:10px;text-align:center;cursor:pointer;transition:.18s
+}
+.day-pill:hover,.day-pill.active{transform:translateY(-2px);border-color:#8fa4b2;background:white;box-shadow:var(--shadow)}
+.day-pill b{display:block;font-size:13px}.day-pill span{font-size:11px;color:var(--muted)}
+.day-panel{display:none}.day-panel.active{display:block}
+.day-head{
+  display:flex;justify-content:space-between;gap:12px;align-items:flex-start;
+  margin:16px 0 10px
+}
+.day-head h2{margin:0;font-size:25px}
+.badge{
+  display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 9px;
+  background:#eef2f3;color:#53636d;font-size:11px;font-weight:700
+}
+.badge.fixed{background:#e9f1eb;color:#46614d}
+.badge.flex{background:#fff1df;color:#8a6139}
+.badge.hard{background:#fbe4e0;color:#9a4036}
+.timeline{position:relative;margin-left:10px}
+.timeline:before{
+  content:"";position:absolute;left:31px;top:8px;bottom:8px;width:2px;background:#ded8ce
+}
+.event{
+  position:relative;display:grid;grid-template-columns:64px 1fr;gap:14px;
+  padding:0 0 15px
+}
+.time{font-size:12px;font-weight:800;color:#7d6b5c;text-align:right;padding-top:13px}
+.event-card{
+  background:var(--card);border:1px solid rgba(0,0,0,.06);border-radius:16px;
+  padding:14px 15px;box-shadow:0 4px 18px rgba(35,54,75,.045);position:relative
+}
+.event-card:before{
+  content:"";position:absolute;width:10px;height:10px;border-radius:50%;
+  background:#85998a;left:-20px;top:18px;border:3px solid var(--bg)
+}
+.event-card.hard{border-left:5px solid var(--danger);background:#fff9f8}
+.event-card.hard:before{background:var(--danger)}
+.event-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.event-title{font-weight:800;font-size:15px}
+.meta{font-size:12px;color:var(--muted);margin-top:4px}
+.detail{font-size:13px;color:#58656f;margin-top:7px}
+.action-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.btn{
+  appearance:none;border:0;border-radius:999px;padding:7px 11px;background:#e7ece8;
+  color:#3d5543;text-decoration:none;font-size:12px;font-weight:700;cursor:pointer
+}
+.btn.map{background:#e5edf2;color:#3d5b70}.btn.danger{background:#f9e4e0;color:#963f35}
+.deadline{
+  margin-top:9px;padding:8px 10px;border-radius:10px;background:#fcebe7;
+  color:#983f35;font-size:12px;font-weight:800
+}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.check-card{background:var(--card);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.check-group{margin-bottom:18px}
+.check-group h3{font-size:14px;color:#6b5e52;margin:0 0 8px}
+.check-row{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px dashed var(--line);font-size:13px}
+.check-row input{width:18px;height:18px;accent-color:var(--sage)}
+.tools{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+.exp-form{display:grid;grid-template-columns:1.2fr .75fr .65fr .65fr auto;gap:8px}
+input,select,button{font:inherit}
+.exp-form input,.exp-form select{
+  min-width:0;padding:10px 11px;border:1px solid #d9d4cc;border-radius:10px;background:white
+}
+.primary{border:0;border-radius:10px;padding:10px 13px;background:var(--navy);color:white;font-weight:800;cursor:pointer}
+.exp-list{margin-top:14px}
+.exp-item{
+  display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:13px
+}
+.exp-summary{margin-top:14px;padding:12px;border-radius:12px;background:#eef2ef;font-size:13px}
+.mini-route{font-size:13px;color:#56636d;margin-top:9px}
+.footer{padding:35px 20px 50px;color:#7a827f;text-align:center;font-size:12px}
+.mobile-only{display:none}
+@media(max-width:820px){
+  .hero{padding-top:34px}.hero-grid{grid-template-columns:1fr 1fr}
+  .cards,.grid2,.tools{grid-template-columns:1fr}
+  .exp-form{grid-template-columns:1fr 1fr}
+  .exp-form .wide{grid-column:1/-1}
+  .primary{grid-column:1/-1}
+  .wrap{padding:16px}
+}
+@media(max-width:480px){
+  .hero-grid{grid-template-columns:1fr 1fr}.hero-stat{padding:11px}
+  .event{grid-template-columns:54px 1fr;gap:11px}.timeline:before{left:26px}
+  .event-card:before{left:-17px}.time{font-size:11px}
+  .day-head{display:block}.day-head .badge{margin-top:8px}
+}
+</style>
+</head>
+<body>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Japan · Cruise · Hong Kong · Vietnam · Singapore</div>
+    <h1>Royal Princess<br>日本・亞洲郵輪之旅</h1>
+    <p>2026.10.02 → 10.16 ｜ 25 歲兒子 × 57 歲媽媽</p>
+    <div class="hero-grid">
+      <div class="hero-stat"><small>去程航班</small><strong>BR192 · TSA → HND</strong></div>
+      <div class="hero-stat"><small>郵輪</small><strong>Royal Princess</strong></div>
+      <div class="hero-stat"><small>Voyage</small><strong>1641</strong></div>
+      <div class="hero-stat"><small>登船</small><strong>10/4 · 16:00–16:30</strong></div>
+    </div>
+  </div>
+</section>
+
+<div class="sticky">
+  <nav class="nav">
+    <a href="#overview">總覽</a>
+    <a href="#itinerary">每日行程</a>
+    <a href="#cruise">郵輪安全線</a>
+    <a href="#packing">行李清單</a>
+    <a href="#expenses">記帳</a>
+  </nav>
+</div>
+
+<main class="wrap">
+  <div class="notice">
+    <strong>郵輪自由行原則：</strong>
+    所有「最晚離開」與「回船」時間都只是保守規劃；當天 Princess App／船上公告的 <b>All Aboard</b> 若更早，一律以船方時間為準。
+  </div>
+
+  <section id="overview">
+    <h2 class="section-title">旅程總覽</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="subtle">東京住宿基地</div>
+        <div class="kpi">有明</div>
+        <div class="mini-route">10/2 台場 · 10/3 明治神宮/澀谷 · 10/4 濱離宮/銀座/登船</div>
+      </div>
+      <div class="card">
+        <div class="subtle">最短靠港日</div>
+        <div class="kpi">清水 7 hr</div>
+        <div class="mini-route">07:00 靠港 · 下船抓 90 分 · 12:00 目標回船</div>
+      </div>
+      <div class="card">
+        <div class="subtle">長距離包車日</div>
+        <div class="kpi">越南順化</div>
+        <div class="mini-route">13:50 硬性回程 · 15:40 前回船</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="itinerary">
+    <h2 class="section-title">每日行程</h2>
+    <div class="trip-rail" id="dayRail"></div>
+    <div id="dayPanels"></div>
+  </section>
+
+  <section id="cruise">
+    <h2 class="section-title">郵輪安全線</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>🇯🇵 清水 · 10/5</h3>
+        <div class="kpi">12:00 回船</div>
+        <div class="mini-route">09:45 離開三保松原 → 10:40 離開日本平 → 11:45 離開魚市場</div>
+      </div>
+      <div class="card">
+        <h3>🇯🇵 大阪 · 10/6</h3>
+        <div class="kpi">16:15 回程</div>
+        <div class="mini-route">18:00 左右上船；若船方變更 All Aboard，以更早者為準。</div>
+      </div>
+      <div class="card">
+        <h3>🇭🇰 香港 · 10/11</h3>
+        <div class="kpi">18:30 回碼頭</div>
+        <div class="mini-route">不把 20:00 幻彩詠香江放進主行程。</div>
+      </div>
+      <div class="card">
+        <h3>🇻🇳 Chan May · 10/13</h3>
+        <div class="kpi">13:50 回程</div>
+        <div class="mini-route">15:20–15:40 港區安檢；不臨時加購物點或海雲嶺。</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="packing">
+    <h2 class="section-title">行李與證件 Checklist</h2>
+    <p class="subtle">勾選狀態會存在這台裝置的瀏覽器裡，重新整理不會消失。</p>
+    <div class="grid2">
+      <div class="check-card">
+        <div class="check-group">
+          <h3>證件 / 登船</h3>
+          <label class="check-row"><input type="checkbox" data-check="passport">護照</label>
+          <label class="check-row"><input type="checkbox" data-check="passport-copy">護照影本／雲端備份</label>
+          <label class="check-row"><input type="checkbox" data-check="boarding">Princess 登船資料／Medallion</label>
+          <label class="check-row"><input type="checkbox" data-check="luggage-tag">郵輪行李牌</label>
+          <label class="check-row"><input type="checkbox" data-check="insurance">旅遊保險資料</label>
+          <label class="check-row"><input type="checkbox" data-check="hk-par">香港入境文件（如適用）</label>
+          <label class="check-row"><input type="checkbox" data-check="vn-doc">越南入境／簽證文件</label>
+        </div>
+        <div class="check-group">
+          <h3>電子用品</h3>
+          <label class="check-row"><input type="checkbox" data-check="phones">手機＋充電線</label>
+          <label class="check-row"><input type="checkbox" data-check="powerbank">行動電源（隨身，不託運）</label>
+          <label class="check-row"><input type="checkbox" data-check="adapter">萬國轉接頭</label>
+          <label class="check-row"><input type="checkbox" data-check="airtag">AirTag／行李定位器</label>
+        </div>
+      </div>
+      <div class="check-card">
+        <div class="check-group">
+          <h3>衣物 / 岸上</h3>
+          <label class="check-row"><input type="checkbox" data-check="shoes">好走的運動鞋</label>
+          <label class="check-row"><input type="checkbox" data-check="jacket">薄防風／防雨外套</label>
+          <label class="check-row"><input type="checkbox" data-check="umbrella">摺疊傘</label>
+          <label class="check-row"><input type="checkbox" data-check="hat">帽子／太陽眼鏡／防曬</label>
+          <label class="check-row"><input type="checkbox" data-check="formal">船上正式晚餐服裝</label>
+          <label class="check-row"><input type="checkbox" data-check="swim">泳衣／拖鞋</label>
+        </div>
+        <div class="check-group">
+          <h3>藥品 / 實用</h3>
+          <label class="check-row"><input type="checkbox" data-check="meds">個人處方藥</label>
+          <label class="check-row"><input type="checkbox" data-check="seasick">暈船藥</label>
+          <label class="check-row"><input type="checkbox" data-check="stomach">腸胃藥／止瀉藥</label>
+          <label class="check-row"><input type="checkbox" data-check="blister">OK 繃／水泡貼</label>
+          <label class="check-row"><input type="checkbox" data-check="water">水壺＋濕紙巾</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="expenses">
+    <h2 class="section-title">共同花費記帳</h2>
+    <div class="tools">
+      <div class="card">
+        <div class="exp-form">
+          <input class="wide" id="expName" placeholder="項目，例如：清水計程車">
+          <input id="expAmount" type="number" min="0" step="0.01" placeholder="金額">
+          <select id="expCurrency">
+            <option>JPY</option><option>HKD</option><option>VND</option><option>SGD</option><option>TWD</option>
+          </select>
+          <select id="expPayer">
+            <option value="me">我付</option><option value="mom">媽媽付</option>
+          </select>
+          <button class="primary" onclick="addExpense()">新增</button>
+        </div>
+        <div id="expList" class="exp-list"></div>
+      </div>
+      <div class="card">
+        <h3>各幣別總花費</h3>
+        <div id="expSummary" class="exp-summary">尚無紀錄</div>
+        <p class="subtle">為避免用過期匯率，這裡不自動換算幣別；每種貨幣分開加總。</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  由你的最新 Excel 行程整理 · 資料會以瀏覽器 localStorage 儲存 · 最終靠離港與 All Aboard 以 Princess 當日公告為準
+</footer>
+
+<script>
+const days = [
+  {
+    date:"10/2", label:"東京", emoji:"🇯🇵", title:"抵達東京＋台場",
+    note:"抵達日不跨城；若延誤，優先刪水舞，不刪休息時間。",
+    events:[
+      ["07:20–11:30","長榮 BR192","台北松山 TSA → 東京羽田 HND","直飛約 3 小時","固定","羽田機場"],
+      ["11:30–13:00","入境／領行李","羽田機場","保留通關與行李緩衝","固定","羽田機場第3航廈"],
+      ["13:00–14:15","前往飯店＋寄放行李","羽田 → 有明","電車／機場巴士，約 45–70 分","固定","相鐵Grand Fresa東京灣有明"],
+      ["14:30–16:00","DiverCity＋實物大獨角獸鋼彈","台場","逛商場、拍鋼彈","固定","DiverCity Tokyo Plaza"],
+      ["16:00–18:00","台場散步","自由女神像／海濱公園／彩虹大橋景觀","把日落與藍調留給海邊","固定","Odaiba Seaside Park"],
+      ["18:00–19:15","晚餐","Aqua City／DECKS 周邊","依排隊狀況選店","彈性","Aqua City Odaiba"],
+      ["19:15–19:45","台場夜景／水舞","台場海濱","有 Aqua Symphony 就看；沒有就直接看夜景","可選","Odaiba Seaside Park"],
+      ["20:30 之後","彈性泡湯","若行程提早結束可安排泡湯","若今天泡，10/3 就不必硬排","可選","勝どき湯"]
+    ]
+  },
+  {
+    date:"10/3", label:"明治神宮・澀谷", emoji:"🇯🇵", title:"明治神宮＋原宿／表參道＋澀谷",
+    note:"這天步行量最高；不排 SHIBUYA SKY。",
+    events:[
+      ["08:00–08:45","早餐／準備","飯店","穿好走的鞋","固定","相鐵Grand Fresa東京灣有明"],
+      ["09:15–10:00","前往原宿","有明 → 原宿／明治神宮前","電車約 40–50 分","固定","明治神宮前站"],
+      ["10:00–11:30","明治神宮","原宿","主參道＋本殿即可","固定","明治神宮"],
+      ["11:30–12:00","竹下通","原宿","週六人多，快速感受氣氛","可調","竹下通"],
+      ["12:00–13:15","午餐","原宿／表參道","不要排過久","固定","表參道"],
+      ["13:15–14:30","表參道＋Cat Street","原宿 → 澀谷","一路步行逛店","固定","Cat Street Harajuku"],
+      ["14:30–15:15","MIYASHITA PARK","澀谷","屋頂休息／簡單逛街","可調","MIYASHITA PARK"],
+      ["15:20–15:45","八公＋Scramble Crossing","澀谷站","經典打卡","固定","Shibuya Scramble Crossing"],
+      ["15:45–17:00","澀谷自由逛街","PARCO／LOFT／Center街","依興趣選 1–2 個點","固定","Shibuya PARCO"],
+      ["17:00–18:15","晚餐","澀谷","吃完回灣岸","固定","Shibuya"],
+      ["18:15–19:15","前往すえひろ湯／回飯店","澀谷 → 勝どき","媽媽累就直接回飯店","視體力","すえひろ湯"],
+      ["19:15–20:30","すえひろ湯","勝どき","想泡再去；不要為泡澡趕路","可選","すえひろ湯"],
+      ["20:30–21:20","回飯店","勝どき → 有明","隔天登船，晚上不要太晚","固定","相鐵Grand Fresa東京灣有明"]
+    ]
+  },
+  {
+    date:"10/4", label:"銀座・登船", emoji:"🚢", title:"濱離宮＋銀座＋Royal Princess 登船",
+    note:"12:30 左右就開始回有明；下午不再追加遠程景點。",
+    events:[
+      ["07:30–08:20","早餐","飯店","登船日不要把早上排太滿","固定","相鐵Grand Fresa東京灣有明"],
+      ["08:20–08:40","退房＋寄放大行李","飯店","護照與登船文件隨身","固定","相鐵Grand Fresa東京灣有明"],
+      ["08:45–09:25","前往汐留","有明 → 汐留","百合海鷗線約 25–35 分","固定","汐留站"],
+      ["09:30–10:40","濱離宮恩賜庭園","汐留／濱離宮","看潮入之池、庭園與城市天際線","固定","濱離宮恩賜庭園"],
+      ["10:40–11:00","步行前往銀座","濱離宮 → 銀座","約 15–20 分","固定","GINZA SIX"],
+      ["11:00–12:00","GINZA SIX／銀座散步","銀座","地下食品、伴手禮、屋頂花園","固定","GINZA SIX"],
+      ["12:00–12:25","銀座中央通步行者天國","銀座中央通","天候差可能取消","可選","銀座中央通"],
+      ["12:25–13:10","返回有明","銀座 → 飯店","地鐵／百合海鷗線約 35–45 分","固定","相鐵Grand Fresa東京灣有明"],
+      ["13:10–14:20","取行李＋休息／簡單午餐","有明","確認護照、Medallion、行李標籤","固定","相鐵Grand Fresa東京灣有明"],
+      ["14:30–14:50","前往郵輪碼頭","有明 → 東京國際郵輪碼頭","大行李直接計程車","固定","Tokyo International Cruise Terminal"],
+      ["14:50–15:30","報到／行李托運","東京國際郵輪碼頭","提早到場","固定","Tokyo International Cruise Terminal"],
+      ["16:00–16:30","Royal Princess 登船","東京國際郵輪碼頭","指定登船時段","硬性","Tokyo International Cruise Terminal","16:00–16:30 必須依船方安排完成登船"]
+    ]
+  },
+  {
+    date:"10/5", label:"清水", emoji:"🗻", title:"三保松原＋日本平＋河岸の市",
+    note:"下船流程抓 90 分鐘；公車＋分段計程車。",
+    events:[
+      ["07:00–08:30","靠港＋下船流程","Royal Princess → 日の出1號岸壁","下船與港區移動合計抓 90 分","固定","Shimizu Port Hinode Pier"],
+      ["08:30–08:38","走到公車站","日の出1號岸壁 → 波止場フェルケール博物館","步行約 7–8 分","固定","Verkehr Museum Shimizu"],
+      ["08:40 / 08:50","前往三保松原","波止場フェルケール博物館 → 三保松原入口","しずてつ [57] 三保山の手線，約 15 分","固定","三保松原入口"],
+      ["09:05–09:10","走進三保松原","三保松原入口 → 羽衣之松","步行約 5 分","固定","三保松原"],
+      ["09:10–09:45","三保松原","羽衣之松／海岸","精簡版，不走太深","固定","三保松原","09:45 無論如何開始前往日本平"],
+      ["09:45–10:10","前往日本平","三保松原 → 日本平夢テラス","計程車約 25 分，約 ¥3,500/車","硬性","日本平夢テラス","09:45 硬性出發"],
+      ["10:10–10:40","日本平夢テラス","日本平","核心展望 30 分","固定","日本平夢テラス","10:40 必須下山"],
+      ["10:40–11:10","前往魚市場","日本平 → 清水魚市場 河岸の市","計程車約 25–30 分","硬性","清水魚市場 河岸の市","10:40 硬性出發"],
+      ["11:10–11:45","海鮮早午餐","河岸の市","排隊超過 15 分就換店","固定","清水魚市場 河岸の市","11:45 必須離開"],
+      ["11:45–11:55","回郵輪碼頭","河岸の市 → 日の出1號岸壁","短程計程車約 5–10 分","硬性","Shimizu Port Hinode Pier","11:45 硬性出發"],
+      ["11:55–12:00","安檢／回船","日の出1號岸壁 → Royal Princess","直接上船","硬性","Shimizu Port Hinode Pier","12:00 目標回船"],
+      ["14:00","Royal Princess 離港","清水 → 大阪","不要用離港時間當最後回船時間","固定","Shimizu Port"]
+    ]
+  },
+  {
+    date:"10/6", label:"大阪", emoji:"🏯", title:"大阪城＋黑門市場＋道頓堀／心齋橋",
+    note:"標準版用 Metro；若媽媽累，大阪城→黑門可直接計程車。",
+    events:[
+      ["09:00","Royal Princess 靠港","大阪港 天保山岸壁","—","固定","Tempozan Wharf"],
+      ["09:15–09:30","下船、步行到車站","天保山 → 大阪港站","步行約 5 分＋出港手續","固定","Osakako Station"],
+      ["09:30–09:50","前往大阪城公園","大阪港站 → 森ノ宮站","中央線直達約 17–20 分","固定","Morinomiya Station"],
+      ["09:50–10:10","進入大阪城核心區","森ノ宮 → 大阪城","步行約 15–20 分","固定","Osaka Castle"],
+      ["10:10–11:30","大阪城參觀","天守閣＋周邊","排隊 >20 分可只看外觀","固定","Osaka Castle"],
+      ["11:30–12:15","前往黑門市場","大阪城 → 日本橋","中央線→堺筋線；累就計程車","固定","Kuromon Market"],
+      ["12:15–13:25","午餐＋市場散步","黑門市場","正餐 1 家＋1–2 個小吃","固定","Kuromon Market"],
+      ["13:25–13:40","走到道頓堀","黑門市場 → 法善寺／道頓堀","步行 10–15 分","固定","Dotonbori"],
+      ["13:40–15:15","道頓堀＋法善寺＋戎橋","道頓堀","Glico、河岸散步","固定","Dotonbori"],
+      ["15:15–16:15","心齋橋購物／咖啡休息","心齋橋筋","可整段刪除","可選","Shinsaibashi-suji"],
+      ["16:15–16:45","返回大阪港","心齋橋/難波 → 本町 → 大阪港","御堂筋線＋中央線","硬性","Osakako Station","16:15 開始回港"],
+      ["16:45–17:40","回天保山／可選港邊休息","天保山","已回港區才安排","可選","Tempozan Marketplace"],
+      ["17:40–18:00","安檢、上船","Royal Princess","目標 18:00 左右在船上","硬性","Tempozan Wharf","18:00 左右上船"],
+      ["20:00","Royal Princess 離港","大阪 → 基隆","最終以 Princess 當日公告為準","固定","Tempozan Wharf"]
+    ]
+  },
+  {date:"10/7",label:"海上日",emoji:"🌊",title:"Sea Day",note:"船上休息、餐廳、活動。",events:[["全天","海上日","Royal Princess","放慢節奏，補眠、洗衣、整理照片","可調","Royal Princess"]]},
+  {date:"10/8",label:"海上日",emoji:"🌊",title:"Sea Day",note:"船上休息。",events:[["全天","海上日","Royal Princess","為基隆與後續港口保留體力","可調","Royal Princess"]]},
+  {date:"10/9",label:"基隆",emoji:"🇹🇼",title:"基隆停靠",note:"依目前規劃：基隆不安排岸上行程。",events:[["07:00–17:00","基隆停靠","Royal Princess","不安排岸上行程","固定","Keelung Port"]]},
+  {date:"10/10",label:"海上日",emoji:"🌊",title:"Sea Day",note:"前往香港。",events:[["全天","海上日","Royal Princess","休息＋準備香港八達通／港幣","可調","Royal Princess"]]},
+  {
+    date:"10/11",label:"香港",emoji:"🇭🇰",title:"太平山＋中環＋天星小輪＋尖沙咀",
+    note:"不把 20:00 幻彩詠香江列入主行程。",
+    events:[
+      ["07:00","Royal Princess 靠港","啟德郵輪碼頭","—","固定","Kai Tak Cruise Terminal"],
+      ["07:20–08:05","下船＋前往山頂纜車","啟德 → 33 Garden Road","計程車約 25–35 分","固定","Peak Tram Central Terminus"],
+      ["08:25–09:35","太平山＋Sky Terrace 428","Victoria Peak","山頂纜車＋步行","固定","Victoria Peak"],
+      ["09:35–10:00","下山回中環","Peak → Central","Peak Tram","固定","Central Hong Kong"],
+      ["10:05–11:15","中環老城區散步","中環街市／荷李活道／大館","步行＋短程計程車","固定","Tai Kwun"],
+      ["11:20–12:25","港式午餐","中環","排隊 >20 分就換店","固定","Central Hong Kong"],
+      ["12:50–13:10","天星小輪","中環 → 尖沙咀","Star Ferry","固定","Star Ferry Central Pier 7"],
+      ["13:10–14:40","尖沙咀海濱","鐘樓／維港／星光大道／K11 MUSEA","步行","固定","Avenue of Stars Hong Kong"],
+      ["14:40–16:10","下午茶＋逛街","尖沙咀","留鬆、補體力","可調","Tsim Sha Tsui"],
+      ["16:10–16:40","前往啟德區","尖沙咀 → Kai Tak","計程車優先","硬性","AIRSIDE Hong Kong","16:10 開始離開核心區"],
+      ["16:45–18:10","早晚餐／休息","啟德 AIRSIDE","提早吃晚餐","固定","AIRSIDE Hong Kong"],
+      ["18:10–18:30","返回郵輪碼頭","AIRSIDE → 啟德郵輪碼頭","計程車","硬性","Kai Tak Cruise Terminal","18:30 左右回碼頭"],
+      ["18:30–19:00","安檢、登船","Royal Princess","—","硬性","Kai Tak Cruise Terminal","19:00 前後上船"],
+      ["20:00","幻彩詠香江","不列入主行程","除非船方 All Aboard 很晚且交通正常才考慮","可選","Victoria Harbour"]
+    ]
+  },
+  {date:"10/12",label:"海上日",emoji:"🌊",title:"Sea Day",note:"準備越南包車日。",events:[["全天","海上日","Royal Princess","確認 Chan May 司機會合點、現金與服裝","可調","Royal Princess"]]},
+  {
+    date:"10/13",label:"越南順化",emoji:"🇻🇳",title:"Chan May → 順化 Hue",
+    note:"主方案採順化；啟定陵是第一個可刪點。",
+    events:[
+      ["07:00","Royal Princess 靠港","Chan May Port · Berth 1","—","固定","Chan May Port"],
+      ["07:20–07:30","下船、與司機會合","港區指定接客點","事前預約包車","固定","Chan May Port"],
+      ["07:30–08:50","前往順化","Chan May → Hue Imperial City","包車約 1:20–1:30","固定","Hue Imperial City"],
+      ["08:50–10:25","順化皇城","Imperial City / Citadel","主軸走午門、太和殿區","固定","Hue Imperial City"],
+      ["10:25–11:20","天姥寺","皇城 → Thien Mu Pagoda","包車約 15 分＋參觀","固定","Thien Mu Pagoda"],
+      ["11:20–12:35","順化午餐","順化市區","不要跨城追網紅餐廳","固定","Hue Vietnam"],
+      ["12:35–13:50","啟定陵","Khai Dinh Tomb","階梯多；媽媽累就刪","可選","Khai Dinh Tomb"],
+      ["13:50–15:20","回 Chan May Port","Khai Dinh → Chan May","包車約 1:20–1:30","硬性","Chan May Port","13:50 硬性回程"],
+      ["15:20–15:40","港區安檢／回船","Chan May Port","—","硬性","Chan May Port","15:40 前回船"],
+      ["17:00","Royal Princess 離港","Chan May","最終以船方公告為準","固定","Chan May Port"]
+    ]
+  },
+  {date:"10/14",label:"海上日",emoji:"🌊",title:"Sea Day",note:"開始準備新加坡入境資料。",events:[["全天","海上日","Royal Princess","可處理新加坡抵達前文件","可調","Royal Princess"]]},
+  {date:"10/15",label:"海上日",emoji:"🌊",title:"Sea Day",note:"收行李、整理帳務。",events:[["全天","海上日","Royal Princess","整理下船行李與隔日隨身包","可調","Royal Princess"]]},
+  {date:"10/16",label:"新加坡",emoji:"🇸🇬",title:"新加坡下船",note:"05:00 抵達；後續依返程航班／住宿安排。",events:[["05:00","Royal Princess 抵達","Singapore","依船方分批下船時間行動","固定","Singapore Cruise Centre"]]}
+];
+
+function mapsUrl(q){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q)}
+function badgeClass(x){
+  if(x==="硬性") return "hard";
+  if(x==="固定") return "fixed";
+  return "flex";
+}
+function renderDays(){
+  const rail=document.getElementById("dayRail");
+  const panels=document.getElementById("dayPanels");
+  days.forEach((d,i)=>{
+    const b=document.createElement("button");
+    b.className="day-pill"+(i===0?" active":"");
+    b.innerHTML=`<b>${d.emoji} ${d.date}</b><span>${d.label}</span>`;
+    b.onclick=()=>showDay(i);
+    rail.appendChild(b);
+
+    const p=document.createElement("div");
+    p.className="day-panel"+(i===0?" active":"");
+    p.id=`day-${i}`;
+    let html=`<div class="day-head"><div><h2>${d.date} · ${d.title}</h2><div class="subtle">${d.note}</div></div><span class="badge">${d.label}</span></div><div class="timeline">`;
+    d.events.forEach(e=>{
+      const deadline=e[6]||"";
+      html+=`<div class="event">
+        <div class="time">${e[0]}</div>
+        <div class="event-card ${e[4]==="硬性"?"hard":""}">
+          <div class="event-top">
+            <div>
+              <div class="event-title">${e[1]}</div>
+              <div class="meta">${e[2]}</div>
+            </div>
+            <span class="badge ${badgeClass(e[4])}">${e[4]}</span>
+          </div>
+          <div class="detail">${e[3]||""}</div>
+          <div class="action-row">
+            ${e[5]?`<a class="btn map" href="${mapsUrl(e[5])}" target="_blank" rel="noopener">📍 Google Maps</a>`:""}
+          </div>
+          ${deadline?`<div class="deadline">⏰ ${deadline}</div>`:""}
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+    p.innerHTML=html;
+    panels.appendChild(p);
+  });
+}
+function showDay(i){
+  document.querySelectorAll(".day-pill").forEach((x,j)=>x.classList.toggle("active",i===j));
+  document.querySelectorAll(".day-panel").forEach((x,j)=>x.classList.toggle("active",i===j));
+  document.getElementById(`day-${i}`).scrollIntoView({behavior:"smooth",block:"start"});
+}
+renderDays();
+
+// Checklist localStorage
+document.querySelectorAll("[data-check]").forEach(cb=>{
+  const key="rp-check-"+cb.dataset.check;
+  cb.checked=localStorage.getItem(key)==="1";
+  cb.addEventListener("change",()=>localStorage.setItem(key,cb.checked?"1":"0"));
+});
+
+// Expense tracker
+let expenses=JSON.parse(localStorage.getItem("rp-expenses")||"[]");
+function saveExpenses(){localStorage.setItem("rp-expenses",JSON.stringify(expenses));renderExpenses()}
+function addExpense(){
+  const name=document.getElementById("expName").value.trim();
+  const amount=Number(document.getElementById("expAmount").value);
+  const currency=document.getElementById("expCurrency").value;
+  const payer=document.getElementById("expPayer").value;
+  if(!name||!amount||amount<=0){alert("請輸入項目與有效金額");return}
+  expenses.push({name,amount,currency,payer,ts:Date.now()});
+  document.getElementById("expName").value="";
+  document.getElementById("expAmount").value="";
+  saveExpenses();
+}
+function deleteExpense(i){expenses.splice(i,1);saveExpenses()}
+function renderExpenses(){
+  const list=document.getElementById("expList"), sum=document.getElementById("expSummary");
+  list.innerHTML="";
+  const totals={};
+  expenses.forEach((e,i)=>{
+    totals[e.currency]=(totals[e.currency]||0)+e.amount;
+    const row=document.createElement("div");
+    row.className="exp-item";
+    row.innerHTML=`<div><b>${e.name}</b><div class="subtle">${e.payer==="me"?"我付":"媽媽付"} · ${e.currency}</div></div>
+      <div><b>${Number(e.amount).toLocaleString()}</b> <button class="btn danger" onclick="deleteExpense(${i})">刪除</button></div>`;
+    list.appendChild(row);
+  });
+  if(!expenses.length){sum.textContent="尚無紀錄";return}
+  sum.innerHTML=Object.entries(totals).map(([c,v])=>`<div><b>${c}</b>：${Number(v).toLocaleString()}</div>`).join("");
+}
+renderExpenses();
+
+// Auto-open today's trip day if current date matches
+(function(){
+  const now=new Date();
+  if(now.getFullYear()!==2026 || now.getMonth()!==9) return;
+  const key=`${now.getMonth()+1}/${now.getDate()}`;
+  const idx=days.findIndex(d=>d.date===key);
+  if(idx>=0) showDay(idx);
+})();
+</script>
+</body>
+</html>
