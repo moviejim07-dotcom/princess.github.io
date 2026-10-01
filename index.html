@@ -29,7 +29,7 @@ a{color:inherit}
 .hero h1{font-size:clamp(30px,5vw,54px);line-height:1.08;margin:10px 0 12px;letter-spacing:-.03em}
 .hero p{margin:0;opacity:.86;font-size:15px}
 .hero-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:28px
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:28px
 }
 .hero-stat{padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.11);backdrop-filter:blur(8px)}
 .hero-stat small{display:block;opacity:.72;font-size:11px;margin-bottom:4px}
@@ -132,6 +132,31 @@ input,select,button{font:inherit}
 .exp-summary{margin-top:14px;padding:12px;border-radius:12px;background:#eef2ef;font-size:13px}
 .mini-route{font-size:13px;color:#56636d;margin-top:9px}
 .footer{padding:35px 20px 50px;color:#7a827f;text-align:center;font-size:12px}
+
+.weather-head{
+  display:flex;justify-content:space-between;gap:12px;align-items:flex-end;margin-bottom:12px
+}
+.weather-status{font-size:12px;color:var(--muted)}
+.weather-card{position:relative;overflow:hidden}
+.weather-card .wx-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.wx-place{font-weight:800;font-size:15px}
+.wx-date{font-size:12px;color:var(--muted)}
+.wx-icon{font-size:32px;line-height:1}
+.wx-temp{font-size:27px;font-weight:850;color:var(--navy);margin-top:8px}
+.wx-desc{font-size:13px;color:#55636d;margin-top:2px}
+.wx-detail{font-size:12px;color:var(--muted);margin-top:8px}
+.outfit{
+  margin-top:12px;padding:10px 11px;border-radius:11px;background:#eef2ef;
+  color:#41564a;font-size:12px
+}
+.wx-far{
+  display:inline-block;margin-top:8px;border-radius:999px;padding:4px 8px;
+  background:#fff3df;color:#8b653a;font-size:10px;font-weight:800
+}
+.wx-error{color:#9a4036;font-size:12px;margin-top:10px}
+.weather-source{font-size:11px;color:#808985;margin-top:11px}
+.weather-source a{color:#536f82}
+
 .mobile-only{display:none}
 @media(max-width:820px){
   .hero{padding-top:34px}.hero-grid{grid-template-columns:1fr 1fr}
@@ -154,19 +179,20 @@ input,select,button{font:inherit}
   <div class="hero-inner">
     <div class="eyebrow">Japan · Cruise · Hong Kong · Vietnam · Singapore</div>
     <h1>Royal Princess<br>日本・亞洲郵輪之旅</h1>
-    <p>2026.10.02 → 10.16 ｜ 25 歲兒子 × 57 歲媽媽</p>
+    <p>2026.10.02 → 10.16</p>
     <div class="hero-grid">
       <div class="hero-stat"><small>去程航班</small><strong>BR192 · TSA → HND</strong></div>
       <div class="hero-stat"><small>郵輪</small><strong>Royal Princess</strong></div>
       <div class="hero-stat"><small>Voyage</small><strong>1641</strong></div>
       <div class="hero-stat"><small>登船</small><strong>10/4 · 16:00–16:30</strong></div>
+      <div class="hero-stat"><small>回程航班</small><strong>BR226 · SIN 13:10 → TPE</strong></div>
     </div>
   </div>
 </section>
 
 <div class="sticky">
   <nav class="nav">
-    <a href="#overview">總覽</a>
+    <a href="#overview">旅遊天氣</a>
     <a href="#itinerary">每日行程</a>
     <a href="#cruise">郵輪安全線</a>
     <a href="#packing">行李清單</a>
@@ -181,23 +207,21 @@ input,select,button{font:inherit}
   </div>
 
   <section id="overview">
-    <h2 class="section-title">旅程總覽</h2>
-    <div class="cards">
-      <div class="card">
-        <div class="subtle">東京住宿基地</div>
-        <div class="kpi">有明</div>
-        <div class="mini-route">10/2 台場 · 10/3 明治神宮/澀谷 · 10/4 濱離宮/銀座/登船</div>
+    <div class="weather-head">
+      <div>
+        <h2 class="section-title" style="margin-bottom:4px;">旅遊天氣</h2>
+        <div class="subtle">靠港／城市日即時預報＋自動穿搭建議。海上日因船舶位置移動，不列固定城市預報。</div>
       </div>
-      <div class="card">
-        <div class="subtle">最短靠港日</div>
-        <div class="kpi">清水 7 hr</div>
-        <div class="mini-route">07:00 靠港 · 下船抓 90 分 · 12:00 目標回船</div>
-      </div>
-      <div class="card">
-        <div class="subtle">長距離包車日</div>
-        <div class="kpi">越南順化</div>
-        <div class="mini-route">13:50 硬性回程 · 15:40 前回船</div>
-      </div>
+      <div id="weatherUpdated" class="weather-status">正在取得最新預報…</div>
+    </div>
+
+    <div class="cards" id="weatherCards">
+      <div class="card"><div class="subtle">正在載入天氣資料…</div></div>
+    </div>
+
+    <div class="weather-source">
+      天氣資料由 <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> 即時提供。
+      網頁每次開啟都會更新，保持開啟時每 1 小時重新抓取一次；越遠期的預報變動會比較大。
     </div>
   </section>
 
@@ -208,73 +232,125 @@ input,select,button{font:inherit}
   </section>
 
   <section id="cruise">
-    <h2 class="section-title">郵輪安全線</h2>
+    <h2 class="section-title">郵輪返程</h2>
     <div class="cards">
       <div class="card">
         <h3>🇯🇵 清水 · 10/5</h3>
-        <div class="kpi">12:00 回船</div>
-        <div class="mini-route">09:45 離開三保松原 → 10:40 離開日本平 → 11:45 離開魚市場</div>
+        <div class="subtle">郵輪發船時間</div>
+        <div class="kpi">14:00 發船</div>
+        <div class="mini-route"><b>13:00 前抵達碼頭</b>｜建議至少提前 1 小時回到日の出1號岸壁。</div>
       </div>
       <div class="card">
         <h3>🇯🇵 大阪 · 10/6</h3>
-        <div class="kpi">16:15 回程</div>
-        <div class="mini-route">18:00 左右上船；若船方變更 All Aboard，以更早者為準。</div>
+        <div class="subtle">郵輪發船時間</div>
+        <div class="kpi">20:00 發船</div>
+        <div class="mini-route"><b>19:00 前抵達碼頭</b>｜建議至少提前 1 小時回到天保山岸壁。</div>
       </div>
       <div class="card">
         <h3>🇭🇰 香港 · 10/11</h3>
-        <div class="kpi">18:30 回碼頭</div>
-        <div class="mini-route">不把 20:00 幻彩詠香江放進主行程。</div>
+        <div class="subtle">郵輪發船時間</div>
+        <div class="kpi">22:00 發船</div>
+        <div class="mini-route"><b>21:00 前抵達碼頭</b>｜建議至少提前 1 小時回到啟德郵輪碼頭。</div>
       </div>
       <div class="card">
         <h3>🇻🇳 Chan May · 10/13</h3>
-        <div class="kpi">13:50 回程</div>
-        <div class="mini-route">15:20–15:40 港區安檢；不臨時加購物點或海雲嶺。</div>
+        <div class="subtle">郵輪發船時間</div>
+        <div class="kpi">17:00 發船</div>
+        <div class="mini-route"><b>16:00 前抵達碼頭</b>｜建議至少提前 1 小時回到 Chan May Port。</div>
       </div>
     </div>
   </section>
 
   <section id="packing">
     <h2 class="section-title">行李與證件 Checklist</h2>
-    <p class="subtle">勾選狀態會存在這台裝置的瀏覽器裡，重新整理不會消失。</p>
+    <p class="subtle">Yiwen 與 Jim 各自獨立勾選，狀態會存在這台裝置的瀏覽器裡，重新整理不會消失。</p>
+
     <div class="grid2">
+
       <div class="check-card">
+        <h2 style="margin-top:0;">Yiwen</h2>
+
         <div class="check-group">
           <h3>證件 / 登船</h3>
-          <label class="check-row"><input type="checkbox" data-check="passport">護照</label>
-          <label class="check-row"><input type="checkbox" data-check="passport-copy">護照影本／雲端備份</label>
-          <label class="check-row"><input type="checkbox" data-check="boarding">Princess 登船資料／Medallion</label>
-          <label class="check-row"><input type="checkbox" data-check="luggage-tag">郵輪行李牌</label>
-          <label class="check-row"><input type="checkbox" data-check="insurance">旅遊保險資料</label>
-          <label class="check-row"><input type="checkbox" data-check="hk-par">香港入境文件（如適用）</label>
-          <label class="check-row"><input type="checkbox" data-check="vn-doc">越南入境／簽證文件</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="passport">護照</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="passport-copy">護照影本／雲端備份</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="boarding">Princess 登船資料／Medallion</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="luggage-tag">郵輪行李牌</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="insurance">旅遊保險資料</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="hk-par">香港入境文件（如適用）</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="vn-doc">越南入境／簽證文件</label>
         </div>
+
         <div class="check-group">
           <h3>電子用品</h3>
-          <label class="check-row"><input type="checkbox" data-check="phones">手機＋充電線</label>
-          <label class="check-row"><input type="checkbox" data-check="powerbank">行動電源（隨身，不託運）</label>
-          <label class="check-row"><input type="checkbox" data-check="adapter">萬國轉接頭</label>
-          <label class="check-row"><input type="checkbox" data-check="airtag">AirTag／行李定位器</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="phones">手機＋充電線</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="powerbank">行動電源（隨身，不託運）</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="adapter">萬國轉接頭</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="airtag">AirTag／行李定位器</label>
         </div>
-      </div>
-      <div class="check-card">
+
         <div class="check-group">
           <h3>衣物 / 岸上</h3>
-          <label class="check-row"><input type="checkbox" data-check="shoes">好走的運動鞋</label>
-          <label class="check-row"><input type="checkbox" data-check="jacket">薄防風／防雨外套</label>
-          <label class="check-row"><input type="checkbox" data-check="umbrella">摺疊傘</label>
-          <label class="check-row"><input type="checkbox" data-check="hat">帽子／太陽眼鏡／防曬</label>
-          <label class="check-row"><input type="checkbox" data-check="formal">船上正式晚餐服裝</label>
-          <label class="check-row"><input type="checkbox" data-check="swim">泳衣／拖鞋</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="shoes">好走的運動鞋</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="jacket">薄防風／防雨外套</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="umbrella">摺疊傘</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="hat">帽子／太陽眼鏡／防曬</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="formal">船上正式晚餐服裝</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="swim">泳衣／拖鞋</label>
         </div>
+
         <div class="check-group">
           <h3>藥品 / 實用</h3>
-          <label class="check-row"><input type="checkbox" data-check="meds">個人處方藥</label>
-          <label class="check-row"><input type="checkbox" data-check="seasick">暈船藥</label>
-          <label class="check-row"><input type="checkbox" data-check="stomach">腸胃藥／止瀉藥</label>
-          <label class="check-row"><input type="checkbox" data-check="blister">OK 繃／水泡貼</label>
-          <label class="check-row"><input type="checkbox" data-check="water">水壺＋濕紙巾</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="meds">個人處方藥</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="seasick">暈船藥</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="stomach">腸胃藥／止瀉藥</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="blister">OK 繃／水泡貼</label>
+          <label class="check-row"><input type="checkbox" data-person="yiwen" data-check="water">水壺＋濕紙巾</label>
         </div>
       </div>
+
+      <div class="check-card">
+        <h2 style="margin-top:0;">Jim</h2>
+
+        <div class="check-group">
+          <h3>證件 / 登船</h3>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="passport">護照</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="passport-copy">護照影本／雲端備份</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="boarding">Princess 登船資料／Medallion</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="luggage-tag">郵輪行李牌</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="insurance">旅遊保險資料</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="hk-par">香港入境文件（如適用）</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="vn-doc">越南入境／簽證文件</label>
+        </div>
+
+        <div class="check-group">
+          <h3>電子用品</h3>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="phones">手機＋充電線</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="powerbank">行動電源（隨身，不託運）</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="adapter">萬國轉接頭</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="airtag">AirTag／行李定位器</label>
+        </div>
+
+        <div class="check-group">
+          <h3>衣物 / 岸上</h3>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="shoes">好走的運動鞋</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="jacket">薄防風／防雨外套</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="umbrella">摺疊傘</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="hat">帽子／太陽眼鏡／防曬</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="formal">船上正式晚餐服裝</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="swim">泳衣／拖鞋</label>
+        </div>
+
+        <div class="check-group">
+          <h3>藥品 / 實用</h3>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="meds">個人處方藥</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="seasick">暈船藥</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="stomach">腸胃藥／止瀉藥</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="blister">OK 繃／水泡貼</label>
+          <label class="check-row"><input type="checkbox" data-person="jim" data-check="water">水壺＋濕紙巾</label>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -442,7 +518,15 @@ const days = [
   },
   {date:"10/14",label:"海上日",emoji:"🌊",title:"Sea Day",note:"開始準備新加坡入境資料。",events:[["全天","海上日","Royal Princess","可處理新加坡抵達前文件","可調","Royal Princess"]]},
   {date:"10/15",label:"海上日",emoji:"🌊",title:"Sea Day",note:"收行李、整理帳務。",events:[["全天","海上日","Royal Princess","整理下船行李與隔日隨身包","可調","Royal Princess"]]},
-  {date:"10/16",label:"新加坡",emoji:"🇸🇬",title:"新加坡下船",note:"05:00 抵達；後續依返程航班／住宿安排。",events:[["05:00","Royal Princess 抵達","Singapore","依船方分批下船時間行動","固定","Singapore Cruise Centre"]]}
+  {
+    date:"10/16",label:"新加坡・回台",emoji:"🇸🇬",title:"新加坡下船＋BR226 回台",
+    note:"Royal Princess 05:00 抵達；長榮 BR226 約 13:10 從樟宜機場飛往桃園。",
+    events:[
+      ["05:00","Royal Princess 抵達新加坡","新加坡郵輪碼頭","依船方分批下船時間行動","固定","Marina Bay Cruise Centre Singapore"],
+      ["下船後","前往樟宜機場","郵輪碼頭 → Singapore Changi Airport","Grab／計程車；保留充裕機場時間","固定","Singapore Changi Airport"],
+      ["13:10","長榮 BR226","Singapore SIN → Taipei TPE","回程航班；實際報到櫃檯與起飛時間以長榮當日資訊為準","硬性","Singapore Changi Airport","13:10 表定自樟宜機場出發"]
+    ]
+  }
 ];
 
 function mapsUrl(q){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q)}
@@ -497,9 +581,124 @@ function showDay(i){
 }
 renderDays();
 
-// Checklist localStorage
+
+// ===== 即時旅遊天氣：Open-Meteo，無需 API Key =====
+const weatherStops = [
+  {date:"2026-10-02", short:"10/2", place:"東京", lat:35.6762, lon:139.6503},
+  {date:"2026-10-03", short:"10/3", place:"東京", lat:35.6762, lon:139.6503},
+  {date:"2026-10-04", short:"10/4", place:"東京", lat:35.6762, lon:139.6503},
+  {date:"2026-10-05", short:"10/5", place:"清水", lat:35.0159, lon:138.4896},
+  {date:"2026-10-06", short:"10/6", place:"大阪", lat:34.6937, lon:135.5023},
+  {date:"2026-10-11", short:"10/11", place:"香港", lat:22.3193, lon:114.1694},
+  {date:"2026-10-13", short:"10/13", place:"順化", lat:16.4637, lon:107.5909},
+  {date:"2026-10-16", short:"10/16", place:"新加坡", lat:1.3521, lon:103.8198}
+];
+
+function weatherLabel(code){
+  if(code===0) return ["☀️","晴朗"];
+  if([1,2].includes(code)) return ["🌤️","晴時多雲"];
+  if(code===3) return ["☁️","多雲"];
+  if([45,48].includes(code)) return ["🌫️","霧"];
+  if([51,53,55,56,57].includes(code)) return ["🌦️","毛毛雨"];
+  if([61,63,65,66,67].includes(code)) return ["🌧️","有雨"];
+  if([71,73,75,77].includes(code)) return ["🌨️","降雪"];
+  if([80,81,82].includes(code)) return ["🌦️","陣雨"];
+  if([85,86].includes(code)) return ["🌨️","陣雪"];
+  if([95,96,99].includes(code)) return ["⛈️","雷雨"];
+  return ["🌡️","天氣"];
+}
+
+function outfitAdvice(maxT,minT,rain,wind){
+  const parts=[];
+  if(maxT>=30){
+    parts.push("排汗短袖＋透氣短褲／薄長褲");
+  }else if(maxT>=25){
+    parts.push("短袖為主，薄外套放包包");
+  }else if(maxT>=20){
+    parts.push("短袖或薄長袖＋薄外套＋長褲");
+  }else{
+    parts.push("薄長袖＋外套＋長褲，早晚注意保暖");
+  }
+  if(minT<=17) parts.push("早晚偏涼，可再加一層");
+  if(rain>=45) parts.push("帶摺疊傘／防水外套");
+  if(wind>=30) parts.push("海邊或港口風大，外套選防風款");
+  if(maxT>=27) parts.push("防曬、帽子與補水");
+  return parts.join("；");
+}
+
+function targetDistanceDays(dateStr){
+  const target=new Date(dateStr+"T12:00:00");
+  const now=new Date();
+  return Math.round((target-now)/(1000*60*60*24));
+}
+
+async function fetchLocationForecast(stop, cache){
+  const key=`${stop.lat},${stop.lon}`;
+  if(cache[key]) return cache[key];
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${stop.lat}&longitude=${stop.lon}`+
+    `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max`+
+    `&timezone=auto&past_days=16&forecast_days=16`;
+  cache[key]=fetch(url).then(r=>{
+    if(!r.ok) throw new Error("weather api");
+    return r.json();
+  });
+  return cache[key];
+}
+
+async function loadWeather(){
+  const box=document.getElementById("weatherCards");
+  const updated=document.getElementById("weatherUpdated");
+  if(!box) return;
+  const cache={};
+  try{
+    const cards=await Promise.all(weatherStops.map(async stop=>{
+      const data=await fetchLocationForecast(stop,cache);
+      const d=data.daily||{};
+      const idx=(d.time||[]).indexOf(stop.date);
+      if(idx<0){
+        return `<div class="card weather-card">
+          <div class="wx-place">${stop.place} · ${stop.short}</div>
+          <div class="wx-error">目前預報範圍尚未涵蓋此日期。</div>
+        </div>`;
+      }
+      const code=d.weather_code[idx];
+      const maxT=Math.round(d.temperature_2m_max[idx]);
+      const minT=Math.round(d.temperature_2m_min[idx]);
+      const rain=Math.round(d.precipitation_probability_max[idx] ?? 0);
+      const wind=Math.round(d.wind_speed_10m_max[idx] ?? 0);
+      const [icon,label]=weatherLabel(code);
+      const dist=targetDistanceDays(stop.date);
+      const far=dist>7 ? `<span class="wx-far">長天期預報，之後仍可能調整</span>` : "";
+      return `<div class="card weather-card">
+        <div class="wx-top">
+          <div>
+            <div class="wx-place">${stop.place}</div>
+            <div class="wx-date">${stop.short}</div>
+          </div>
+          <div class="wx-icon">${icon}</div>
+        </div>
+        <div class="wx-temp">${maxT}° / ${minT}°C</div>
+        <div class="wx-desc">${label}</div>
+        <div class="wx-detail">降雨機率 ${rain}% · 最大風速約 ${wind} km/h</div>
+        <div class="outfit">👕 <b>穿搭：</b>${outfitAdvice(maxT,minT,rain,wind)}</div>
+        ${far}
+      </div>`;
+    }));
+    box.innerHTML=cards.join("");
+    updated.textContent="最新更新："+new Date().toLocaleString("zh-TW",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"});
+  }catch(err){
+    box.innerHTML=`<div class="card"><div class="wx-error">目前無法取得即時天氣，請稍後重新整理頁面。</div></div>`;
+    updated.textContent="天氣更新失敗";
+  }
+}
+loadWeather();
+setInterval(loadWeather,60*60*1000);
+
+
+// Checklist localStorage：Yiwen / Jim 分開儲存
 document.querySelectorAll("[data-check]").forEach(cb=>{
-  const key="rp-check-"+cb.dataset.check;
+  const person=cb.dataset.person || "shared";
+  const key=`rp-check-${person}-${cb.dataset.check}`;
   cb.checked=localStorage.getItem(key)==="1";
   cb.addEventListener("change",()=>localStorage.setItem(key,cb.checked?"1":"0"));
 });
